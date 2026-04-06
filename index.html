@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My site</title>
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  background: black;
+  color: white;
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -2;
+}
+
+.grid {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -1;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 1s ease;
+}
+
+section.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.title {
+  font-size: 3rem;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.text {
+  font-size: 1.2rem;
+  max-width: 600px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.cursor-light {
+  position: fixed;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent);
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fade-word span {
+  opacity: 0;
+  filter: blur(10px);
+  display: inline-block;
+  animation: reveal 0.8s forwards;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="grid"></div>
+<div class="cursor-light" id="light"></div>
+
+<section class="show">
+  <div class="title fade-word" id="homeTitle"></div>
+</section>
+
+<section>
+  <div class="title">I build at the intersection of clinic and health</div>
+  <div class="text">I'm Jiayang Gong-a meidcal newbie evolving into a designer, an explorer,and an independent creator.
+With a footprint that has crossed the globe, l've spent the last three years immersing myself in the intersection of Oncology, physiology, and Biologychemistry. This mutual exposure taught me that the most powerful language isn't terminology-it's the ability to bridge between diseases and concepts.To me, Al is the ultimate leverage. It has turned the daunting "molecular mechanisms gap" into a playground for creativity. I'm currently deep in the world of Al-assisted development, where the distinction between "thinking" and "doing" is blurring. I don't just learn the essays; I explore essays and build logic pathways.
+The future belongs to the curious. I'm spending mine leveling up-refining my logic thinking, sharpening my design eye, and exploring the
+boundless possibilities of being an Al-powered independent healthcare professional.</div>
+</section>
+
+<section>
+  <div class="title">Experiences</div>
+  <div class="text">Provincial Level:
+Jiangsu Provincial College Student Innovation and Entrepreneurship Training Program: *Nova1 Mediates Anti-Hypoxia Activity of Neuroblastoma Cells via the PI3K/Akt/mTOR Signaling Pathway*
+Third Prize (Provincial Level) – Jiangsu Division, 4th "SFLEP·Vocab Champion" National College Student English Vocabulary Competition (Non-English Major Undergraduate Group)
+;University Level:
+Outstanding Student Scholarship, Academic Year 2023–2024
+Outstanding Student Scholarship, Academic Year 2022–2023</div>
+</section>
+
+<section>
+  <div class="title">Project</div>
+  <div class="text">Short-term goals: Deepen expertise in gastrointestinal cancer, actively engage in research projects, publish high-quality papers, and enhance research skills.
+Long-term goals: Become an expert in gastrointestinal cancer, focus on clinical translational research, drive clinical application of findings, and improve patients' quality of life.</div>
+</section>
+
+<section>
+  <div class="title">Hobby</div>
+  <div class="text">Passionate about football and fitness. During university, as team captain, I led the team to defeat LianYungang Normal university, Jiangsu Vocational College of Economics and Trade, Jianghai University, and several other clubs from Lianyungang.</div>
+</section>
+
+<section>
+  <div class="title">Thank You</div>
+  <div class="text">
+Thanks for your time.
+The journey is just beginning.</div>
+</section>
+
+<script>
+// 粒子 + 连线
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+for (let i = 0; i < 100; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.7,
+    vy: (Math.random() - 0.5) * 0.7
+  });
+}
+
+function drawLines() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      let dx = particles[i].x - particles[j].x;
+      let dy = particles[i].y - particles[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 120) {
+        ctx.strokeStyle = "rgba(255,255,255," + (1 - dist / 120) * 0.2 + ")";
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  });
+
+  drawLines();
+  requestAnimationFrame(animate);
+}
+animate();
+
+// 鼠标光效
+const light = document.getElementById('light');
+document.addEventListener('mousemove', e => {
+  light.style.left = e.clientX + 'px';
+  light.style.top = e.clientY + 'px';
+});
+
+// 滚动出现动画
+const sections = document.querySelectorAll("section");
+window.addEventListener("scroll", () => {
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top < window.innerHeight - 100) {
+      sec.classList.add("show");
+    }
+  });
+});
+
+// Apple发布会风文字（仅保留结尾这一份）
+const text2 = "Jiayang Gong";
+const container2 = document.getElementById('homeTitle');
+text2.split("").forEach((char, index) => {
+  const span = document.createElement("span");
+  span.textContent = char;
+  span.style.animationDelay = index * 0.05 + "s";
+  container2.appendChild(span);
+});
+
+</script>
+</body>
+</html>
